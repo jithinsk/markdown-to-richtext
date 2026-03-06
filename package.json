@@ -1,9 +1,17 @@
 {
   "name": "md-to-rich",
-  "version": "1.0.0",
+  "version": "1.0.2",
   "description": "Convert Markdown to HTML, ANSI terminal output, and Doc Tree via an extensible Serializer interface",
   "license": "MIT",
   "author": "Jithin Sebastian",
+  "homepage": "https://github.com/jithinsk/markdown-to-richtext#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jithinsk/markdown-to-richtext.git"
+  },
+  "bugs": {
+    "url": "https://github.com/jithinsk/markdown-to-richtext/issues"
+  },
   "keywords": [
     "markdown",
     "html",
