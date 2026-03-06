@@ -1,0 +1,907 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`toDocTree > renders GFM tables 1`] = `
+{
+  "children": [
+    {
+      "children": [
+        {
+          "bold": false,
+          "italic": false,
+          "strikethrough": false,
+          "type": "text",
+          "value": "Tables",
+        },
+      ],
+      "depth": 1,
+      "type": "heading",
+    },
+    {
+      "align": [
+        "left",
+        "right",
+        "center",
+      ],
+      "children": [
+        {
+          "children": [
+            {
+              "children": [
+                {
+                  "bold": false,
+                  "italic": false,
+                  "strikethrough": false,
+                  "type": "text",
+                  "value": "Name",
+                },
+              ],
+              "type": "tableCell",
+            },
+            {
+              "children": [
+                {
+                  "bold": false,
+                  "italic": false,
+                  "strikethrough": false,
+                  "type": "text",
+                  "value": "Age",
+                },
+              ],
+              "type": "tableCell",
+            },
+            {
+              "children": [
+                {
+                  "bold": false,
+                  "italic": false,
+                  "strikethrough": false,
+                  "type": "text",
+                  "value": "City",
+                },
+              ],
+              "type": "tableCell",
+            },
+          ],
+          "isHeader": true,
+          "type": "tableRow",
+        },
+        {
+          "children": [
+            {
+              "children": [
+                {
+                  "bold": false,
+                  "italic": false,
+                  "strikethrough": false,
+                  "type": "text",
+                  "value": "Alice",
+                },
+              ],
+              "type": "tableCell",
+            },
+            {
+              "children": [
+                {
+                  "bold": false,
+                  "italic": false,
+                  "strikethrough": false,
+                  "type": "text",
+                  "value": "30",
+                },
+              ],
+              "type": "tableCell",
+            },
+            {
+              "children": [
+                {
+                  "bold": false,
+                  "italic": false,
+                  "strikethrough": false,
+                  "type": "text",
+                  "value": "New York",
+                },
+              ],
+              "type": "tableCell",
+            },
+          ],
+          "isHeader": false,
+          "type": "tableRow",
+        },
+        {
+          "children": [
+            {
+              "children": [
+                {
+                  "bold": false,
+                  "italic": false,
+                  "strikethrough": false,
+                  "type": "text",
+                  "value": "Bob",
+                },
+              ],
+              "type": "tableCell",
+            },
+            {
+              "children": [
+                {
+                  "bold": false,
+                  "italic": false,
+                  "strikethrough": false,
+                  "type": "text",
+                  "value": "25",
+                },
+              ],
+              "type": "tableCell",
+            },
+            {
+              "children": [
+                {
+                  "bold": false,
+                  "italic": false,
+                  "strikethrough": false,
+                  "type": "text",
+                  "value": "London",
+                },
+              ],
+              "type": "tableCell",
+            },
+          ],
+          "isHeader": false,
+          "type": "tableRow",
+        },
+        {
+          "children": [
+            {
+              "children": [
+                {
+                  "bold": false,
+                  "italic": false,
+                  "strikethrough": false,
+                  "type": "text",
+                  "value": "Carol",
+                },
+              ],
+              "type": "tableCell",
+            },
+            {
+              "children": [
+                {
+                  "bold": false,
+                  "italic": false,
+                  "strikethrough": false,
+                  "type": "text",
+                  "value": "35",
+                },
+              ],
+              "type": "tableCell",
+            },
+            {
+              "children": [
+                {
+                  "bold": false,
+                  "italic": false,
+                  "strikethrough": false,
+                  "type": "text",
+                  "value": "Tokyo",
+                },
+              ],
+              "type": "tableCell",
+            },
+          ],
+          "isHeader": false,
+          "type": "tableRow",
+        },
+      ],
+      "type": "table",
+    },
+  ],
+  "type": "document",
+}
+`;
+
+exports[`toDocTree > renders basic markdown 1`] = `
+{
+  "children": [
+    {
+      "children": [
+        {
+          "bold": false,
+          "italic": false,
+          "strikethrough": false,
+          "type": "text",
+          "value": "Hello World",
+        },
+      ],
+      "depth": 1,
+      "type": "heading",
+    },
+    {
+      "children": [
+        {
+          "bold": false,
+          "italic": false,
+          "strikethrough": false,
+          "type": "text",
+          "value": "A simple paragraph with ",
+        },
+        {
+          "bold": true,
+          "italic": false,
+          "strikethrough": false,
+          "type": "text",
+          "value": "bold",
+        },
+        {
+          "bold": false,
+          "italic": false,
+          "strikethrough": false,
+          "type": "text",
+          "value": ", ",
+        },
+        {
+          "bold": false,
+          "italic": true,
+          "strikethrough": false,
+          "type": "text",
+          "value": "italic",
+        },
+        {
+          "bold": false,
+          "italic": false,
+          "strikethrough": false,
+          "type": "text",
+          "value": ", and ",
+        },
+        {
+          "type": "inlineCode",
+          "value": "inline code",
+        },
+        {
+          "bold": false,
+          "italic": false,
+          "strikethrough": false,
+          "type": "text",
+          "value": ".",
+        },
+      ],
+      "type": "paragraph",
+    },
+    {
+      "children": [
+        {
+          "bold": false,
+          "italic": false,
+          "strikethrough": false,
+          "type": "text",
+          "value": "Section Two",
+        },
+      ],
+      "depth": 2,
+      "type": "heading",
+    },
+    {
+      "children": [
+        {
+          "bold": false,
+          "italic": false,
+          "strikethrough": false,
+          "type": "text",
+          "value": "Another paragraph with a ",
+        },
+        {
+          "children": [
+            {
+              "bold": false,
+              "italic": false,
+              "strikethrough": false,
+              "type": "text",
+              "value": "link",
+            },
+          ],
+          "title": "Example",
+          "type": "link",
+          "url": "https://example.com",
+        },
+        {
+          "bold": false,
+          "italic": false,
+          "strikethrough": false,
+          "type": "text",
+          "value": " and ",
+        },
+        {
+          "alt": "alt text",
+          "title": null,
+          "type": "image",
+          "url": "https://example.com/img.png",
+        },
+        {
+          "bold": false,
+          "italic": false,
+          "strikethrough": false,
+          "type": "text",
+          "value": ".",
+        },
+      ],
+      "type": "paragraph",
+    },
+    {
+      "children": [
+        {
+          "bold": false,
+          "italic": false,
+          "strikethrough": false,
+          "type": "text",
+          "value": "Section Three",
+        },
+      ],
+      "depth": 3,
+      "type": "heading",
+    },
+    {
+      "children": [
+        {
+          "children": [
+            {
+              "bold": false,
+              "italic": false,
+              "strikethrough": false,
+              "type": "text",
+              "value": "A blockquote with ",
+            },
+            {
+              "bold": true,
+              "italic": false,
+              "strikethrough": false,
+              "type": "text",
+              "value": "bold",
+            },
+            {
+              "bold": false,
+              "italic": false,
+              "strikethrough": false,
+              "type": "text",
+              "value": " text.",
+            },
+          ],
+          "type": "paragraph",
+        },
+      ],
+      "type": "blockquote",
+    },
+    {
+      "type": "thematicBreak",
+    },
+    {
+      "children": [
+        {
+          "bold": false,
+          "italic": false,
+          "strikethrough": false,
+          "type": "text",
+          "value": "Plain paragraph after HR.",
+        },
+      ],
+      "type": "paragraph",
+    },
+  ],
+  "type": "document",
+}
+`;
+
+exports[`toDocTree > renders kitchen sink 1`] = `
+{
+  "children": [
+    {
+      "children": [
+        {
+          "bold": false,
+          "italic": false,
+          "strikethrough": false,
+          "type": "text",
+          "value": "Kitchen Sink",
+        },
+      ],
+      "depth": 1,
+      "type": "heading",
+    },
+    {
+      "children": [
+        {
+          "bold": false,
+          "italic": false,
+          "strikethrough": false,
+          "type": "text",
+          "value": "Inline Styles",
+        },
+      ],
+      "depth": 2,
+      "type": "heading",
+    },
+    {
+      "children": [
+        {
+          "bold": true,
+          "italic": false,
+          "strikethrough": false,
+          "type": "text",
+          "value": "Bold",
+        },
+        {
+          "bold": false,
+          "italic": false,
+          "strikethrough": false,
+          "type": "text",
+          "value": ", ",
+        },
+        {
+          "bold": false,
+          "italic": true,
+          "strikethrough": false,
+          "type": "text",
+          "value": "italic",
+        },
+        {
+          "bold": false,
+          "italic": false,
+          "strikethrough": false,
+          "type": "text",
+          "value": ", ",
+        },
+        {
+          "bold": false,
+          "italic": false,
+          "strikethrough": true,
+          "type": "text",
+          "value": "strikethrough",
+        },
+        {
+          "bold": false,
+          "italic": false,
+          "strikethrough": false,
+          "type": "text",
+          "value": ", ",
+        },
+        {
+          "type": "inlineCode",
+          "value": "code",
+        },
+        {
+          "bold": false,
+          "italic": false,
+          "strikethrough": false,
+          "type": "text",
+          "value": ", ",
+        },
+        {
+          "bold": true,
+          "italic": true,
+          "strikethrough": false,
+          "type": "text",
+          "value": "bold italic",
+        },
+        {
+          "bold": false,
+          "italic": false,
+          "strikethrough": false,
+          "type": "text",
+          "value": ", ",
+        },
+        {
+          "bold": true,
+          "italic": false,
+          "strikethrough": true,
+          "type": "text",
+          "value": "bold strike",
+        },
+        {
+          "bold": false,
+          "italic": false,
+          "strikethrough": false,
+          "type": "text",
+          "value": ".",
+        },
+      ],
+      "type": "paragraph",
+    },
+    {
+      "children": [
+        {
+          "bold": false,
+          "italic": false,
+          "strikethrough": false,
+          "type": "text",
+          "value": "Links & Images",
+        },
+      ],
+      "depth": 2,
+      "type": "heading",
+    },
+    {
+      "children": [
+        {
+          "children": [
+            {
+              "bold": false,
+              "italic": false,
+              "strikethrough": false,
+              "type": "text",
+              "value": "OpenAI",
+            },
+          ],
+          "title": null,
+          "type": "link",
+          "url": "https://openai.com",
+        },
+        {
+          "bold": false,
+          "italic": false,
+          "strikethrough": false,
+          "type": "text",
+          "value": " and ",
+        },
+        {
+          "alt": "logo",
+          "title": "Logo",
+          "type": "image",
+          "url": "https://example.com/logo.png",
+        },
+        {
+          "bold": false,
+          "italic": false,
+          "strikethrough": false,
+          "type": "text",
+          "value": ".",
+        },
+      ],
+      "type": "paragraph",
+    },
+    {
+      "children": [
+        {
+          "bold": false,
+          "italic": false,
+          "strikethrough": false,
+          "type": "text",
+          "value": "Blockquote",
+        },
+      ],
+      "depth": 2,
+      "type": "heading",
+    },
+    {
+      "children": [
+        {
+          "children": [
+            {
+              "bold": false,
+              "italic": false,
+              "strikethrough": false,
+              "type": "text",
+              "value": "First level",
+            },
+          ],
+          "type": "paragraph",
+        },
+        {
+          "children": [
+            {
+              "children": [
+                {
+                  "bold": false,
+                  "italic": false,
+                  "strikethrough": false,
+                  "type": "text",
+                  "value": "Nested blockquote",
+                },
+              ],
+              "type": "paragraph",
+            },
+          ],
+          "type": "blockquote",
+        },
+      ],
+      "type": "blockquote",
+    },
+    {
+      "children": [
+        {
+          "bold": false,
+          "italic": false,
+          "strikethrough": false,
+          "type": "text",
+          "value": "Code",
+        },
+      ],
+      "depth": 2,
+      "type": "heading",
+    },
+    {
+      "lang": "js",
+      "type": "code",
+      "value": "console.log('hello')",
+    },
+    {
+      "children": [
+        {
+          "bold": false,
+          "italic": false,
+          "strikethrough": false,
+          "type": "text",
+          "value": "Table",
+        },
+      ],
+      "depth": 2,
+      "type": "heading",
+    },
+    {
+      "align": [
+        null,
+        null,
+      ],
+      "children": [
+        {
+          "children": [
+            {
+              "children": [
+                {
+                  "bold": false,
+                  "italic": false,
+                  "strikethrough": false,
+                  "type": "text",
+                  "value": "Col A",
+                },
+              ],
+              "type": "tableCell",
+            },
+            {
+              "children": [
+                {
+                  "bold": false,
+                  "italic": false,
+                  "strikethrough": false,
+                  "type": "text",
+                  "value": "Col B",
+                },
+              ],
+              "type": "tableCell",
+            },
+          ],
+          "isHeader": true,
+          "type": "tableRow",
+        },
+        {
+          "children": [
+            {
+              "children": [
+                {
+                  "bold": false,
+                  "italic": false,
+                  "strikethrough": false,
+                  "type": "text",
+                  "value": "1",
+                },
+              ],
+              "type": "tableCell",
+            },
+            {
+              "children": [
+                {
+                  "bold": false,
+                  "italic": false,
+                  "strikethrough": false,
+                  "type": "text",
+                  "value": "2",
+                },
+              ],
+              "type": "tableCell",
+            },
+          ],
+          "isHeader": false,
+          "type": "tableRow",
+        },
+        {
+          "children": [
+            {
+              "children": [
+                {
+                  "bold": false,
+                  "italic": false,
+                  "strikethrough": false,
+                  "type": "text",
+                  "value": "3",
+                },
+              ],
+              "type": "tableCell",
+            },
+            {
+              "children": [
+                {
+                  "bold": false,
+                  "italic": false,
+                  "strikethrough": false,
+                  "type": "text",
+                  "value": "4",
+                },
+              ],
+              "type": "tableCell",
+            },
+          ],
+          "isHeader": false,
+          "type": "tableRow",
+        },
+      ],
+      "type": "table",
+    },
+    {
+      "children": [
+        {
+          "bold": false,
+          "italic": false,
+          "strikethrough": false,
+          "type": "text",
+          "value": "Task List",
+        },
+      ],
+      "depth": 2,
+      "type": "heading",
+    },
+    {
+      "children": [
+        {
+          "checked": true,
+          "children": [
+            {
+              "children": [
+                {
+                  "bold": false,
+                  "italic": false,
+                  "strikethrough": false,
+                  "type": "text",
+                  "value": "Done",
+                },
+              ],
+              "type": "paragraph",
+            },
+          ],
+          "type": "listItem",
+        },
+        {
+          "checked": false,
+          "children": [
+            {
+              "children": [
+                {
+                  "bold": false,
+                  "italic": false,
+                  "strikethrough": false,
+                  "type": "text",
+                  "value": "Todo",
+                },
+              ],
+              "type": "paragraph",
+            },
+          ],
+          "type": "listItem",
+        },
+      ],
+      "ordered": false,
+      "type": "list",
+    },
+    {
+      "children": [
+        {
+          "bold": false,
+          "italic": false,
+          "strikethrough": false,
+          "type": "text",
+          "value": "Nested List",
+        },
+      ],
+      "depth": 2,
+      "type": "heading",
+    },
+    {
+      "children": [
+        {
+          "checked": null,
+          "children": [
+            {
+              "children": [
+                {
+                  "bold": false,
+                  "italic": false,
+                  "strikethrough": false,
+                  "type": "text",
+                  "value": "Level 1",
+                },
+              ],
+              "type": "paragraph",
+            },
+            {
+              "children": [
+                {
+                  "checked": null,
+                  "children": [
+                    {
+                      "children": [
+                        {
+                          "bold": false,
+                          "italic": false,
+                          "strikethrough": false,
+                          "type": "text",
+                          "value": "Level 2",
+                        },
+                      ],
+                      "type": "paragraph",
+                    },
+                    {
+                      "children": [
+                        {
+                          "checked": null,
+                          "children": [
+                            {
+                              "children": [
+                                {
+                                  "bold": false,
+                                  "italic": false,
+                                  "strikethrough": false,
+                                  "type": "text",
+                                  "value": "Level 3",
+                                },
+                              ],
+                              "type": "paragraph",
+                            },
+                          ],
+                          "type": "listItem",
+                        },
+                      ],
+                      "ordered": false,
+                      "type": "list",
+                    },
+                  ],
+                  "type": "listItem",
+                },
+              ],
+              "ordered": false,
+              "type": "list",
+            },
+          ],
+          "type": "listItem",
+        },
+      ],
+      "ordered": false,
+      "type": "list",
+    },
+    {
+      "children": [
+        {
+          "bold": false,
+          "italic": false,
+          "strikethrough": false,
+          "type": "text",
+          "value": "Thematic Break",
+        },
+      ],
+      "depth": 2,
+      "type": "heading",
+    },
+    {
+      "type": "thematicBreak",
+    },
+    {
+      "children": [
+        {
+          "bold": false,
+          "italic": false,
+          "strikethrough": false,
+          "type": "text",
+          "value": "End.",
+        },
+      ],
+      "type": "paragraph",
+    },
+  ],
+  "type": "document",
+}
+`;

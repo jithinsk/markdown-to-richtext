@@ -1,0 +1,17 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`toHtml > renders GFM tables 1`] = `"<h1 id="tables">Tables</h1><table><thead><tr><th style="text-align:left">Name</th><th style="text-align:right">Age</th><th style="text-align:center">City</th></tr></thead><tbody><tr><td style="text-align:left">Alice</td><td style="text-align:right">30</td><td style="text-align:center">New York</td></tr><tr><td style="text-align:left">Bob</td><td style="text-align:right">25</td><td style="text-align:center">London</td></tr><tr><td style="text-align:left">Carol</td><td style="text-align:right">35</td><td style="text-align:center">Tokyo</td></tr></tbody></table>"`;
+
+exports[`toHtml > renders GFM task lists 1`] = `"<h1 id="task-list">Task List</h1><ul><li><input type="checkbox" disabled checked> <p>Buy groceries</p></li><li><input type="checkbox" disabled> <p>Write tests</p></li><li><input type="checkbox" disabled checked> <p>Deploy to production</p></li></ul>"`;
+
+exports[`toHtml > renders basic markdown 1`] = `"<h1 id="hello-world">Hello World</h1><p>A simple paragraph with <strong>bold</strong>, <em>italic</em>, and <code>inline code</code>.</p><h2 id="section-two">Section Two</h2><p>Another paragraph with a <a href="https://example.com" title="Example">link</a> and <img src="https://example.com/img.png" alt="alt text">.</p><h3 id="section-three">Section Three</h3><blockquote><p>A blockquote with <strong>bold</strong> text.</p></blockquote><hr><p>Plain paragraph after HR.</p>"`;
+
+exports[`toHtml > renders code blocks 1`] = `
+"<h1 id="code-blocks">Code Blocks</h1><p>Inline: <code>const x = 1</code></p><pre><code class="language-typescript">function greet(name: string): string {
+  return \`Hello, \${name}!\`
+}</code></pre><pre><code>Plain code block, no language.</code></pre>"
+`;
+
+exports[`toHtml > renders kitchen sink 1`] = `"<h1 id="kitchen-sink">Kitchen Sink</h1><h2 id="inline-styles">Inline Styles</h2><p><strong>Bold</strong>, <em>italic</em>, <del>strikethrough</del>, <code>code</code>, <strong><em>bold italic</em></strong>, <del><strong>bold strike</strong></del>.</p><h2 id="links-images">Links &amp; Images</h2><p><a href="https://openai.com">OpenAI</a> and <img src="https://example.com/logo.png" alt="logo" title="Logo">.</p><h2 id="blockquote">Blockquote</h2><blockquote><p>First level</p><blockquote><p>Nested blockquote</p></blockquote></blockquote><h2 id="code">Code</h2><pre><code class="language-js">console.log('hello')</code></pre><h2 id="table">Table</h2><table><thead><tr><th>Col A</th><th>Col B</th></tr></thead><tbody><tr><td>1</td><td>2</td></tr><tr><td>3</td><td>4</td></tr></tbody></table><h2 id="task-list">Task List</h2><ul><li><input type="checkbox" disabled checked> <p>Done</p></li><li><input type="checkbox" disabled> <p>Todo</p></li></ul><h2 id="nested-list">Nested List</h2><ul><li><p>Level 1</p><ul><li><p>Level 2</p><ul><li>Level 3</li></ul></li></ul></li></ul><h2 id="thematic-break">Thematic Break</h2><hr><p>End.</p>"`;
+
+exports[`toHtml > renders nested lists 1`] = `"<h1 id="nested-lists">Nested Lists</h1><ul><li><p>Item 1</p><ul><li>Item 1.1</li><li><p>Item 1.2</p><ul><li>Item 1.2.1</li></ul></li></ul></li><li>Item 2</li><li>Item 3</li></ul><ol><li>First</li><li><p>Second</p><ol><li>Second A</li><li>Second B</li></ol></li><li>Third</li></ol>"`;

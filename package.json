@@ -1,0 +1,81 @@
+{
+  "name": "md-to-rich",
+  "version": "1.0.0",
+  "description": "Convert Markdown to HTML, ANSI terminal output, and Doc Tree via an extensible Serializer interface",
+  "license": "MIT",
+  "author": "Jithin Sebastian",
+  "keywords": [
+    "markdown",
+    "html",
+    "ansi",
+    "terminal",
+    "doc-tree",
+    "rich-text",
+    "serializer",
+    "remark",
+    "mdast",
+    "gfm",
+    "prosemirror",
+    "slate"
+  ],
+  "type": "module",
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    },
+    "./html": {
+      "types": "./dist/serializers/html/index.d.ts",
+      "import": "./dist/serializers/html/index.js",
+      "require": "./dist/serializers/html/index.cjs"
+    },
+    "./ansi": {
+      "types": "./dist/serializers/ansi/index.d.ts",
+      "import": "./dist/serializers/ansi/index.js",
+      "require": "./dist/serializers/ansi/index.cjs"
+    },
+    "./doc-tree": {
+      "types": "./dist/serializers/doc-tree/index.d.ts",
+      "import": "./dist/serializers/doc-tree/index.js",
+      "require": "./dist/serializers/doc-tree/index.cjs"
+    }
+  },
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage",
+    "typecheck": "tsc --noEmit",
+    "prepublishOnly": "npm run typecheck && npm test && npm run build"
+  },
+  "dependencies": {
+    "mdast-util-to-string": "^4.0.0",
+    "remark": "^15.0.1",
+    "remark-gfm": "^4.0.1",
+    "remark-parse": "^11.0.0",
+    "unified": "^11.0.5",
+    "unist-util-visit": "^5.1.0"
+  },
+  "devDependencies": {
+    "@types/mdast": "^4.0.4",
+    "@types/node": "^22.0.0",
+    "@vitest/coverage-v8": "^2.0.0",
+    "tsup": "^8.0.0",
+    "tsx": "^4.21.0",
+    "typescript": "^5.5.0",
+    "vitest": "^2.0.0"
+  }
+}
