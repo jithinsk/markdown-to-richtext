@@ -1,0 +1,81 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`toAnsi > renders GFM tables 1`] = `
+"[1;4;35mTables[0m
+
+┌───────┬─────┬──────────┐
+│ [1mName [22m │ [1mAge[22m │ [1mCity    [22m │
+├───────┼─────┼──────────┤
+│ Alice │ 30  │ New York │
+│ Bob   │ 25  │ London   │
+│ Carol │ 35  │ Tokyo    │
+└───────┴─────┴──────────┘"
+`;
+
+exports[`toAnsi > renders basic markdown 1`] = `
+"[1;4;35mHello World[0m
+
+A simple paragraph with [1mbold[22m, [3mitalic[23m, and [7;33minline code[0m.
+
+[1;4;36mSection Two[0m
+
+Another paragraph with a [4;34mlink[0m (https://example.com) and [image: alt text].
+
+[1;36mSection Three[0m
+
+[90m│ [39mA blockquote with [1mbold[22m text.
+
+────────────────────────────────────────────────────────────────────────────────
+
+Plain paragraph after HR."
+`;
+
+exports[`toAnsi > renders kitchen sink 1`] = `
+"[1;4;35mKitchen Sink[0m
+
+[1;4;36mInline Styles[0m
+
+[1mBold[22m, [3mitalic[23m, [9mstrikethrough[29m, [7;33mcode[0m, [1m[3mbold italic[23m[22m, [9m[1mbold strike[22m[29m.
+
+[1;4;36mLinks & Images[0m
+
+[4;34mOpenAI[0m (https://openai.com) and [image: logo].
+
+[1;4;36mBlockquote[0m
+
+[90m│ [39mFirst level
+[90m│ [39m
+[90m│ [39m[90m│ [39mNested blockquote
+
+[1;4;36mCode[0m
+
+[90m┌─ code (js)[39m
+[90m│ console.log('hello')[39m
+[90m└─[39m
+
+[1;4;36mTable[0m
+
+┌───────┬───────┐
+│ [1mCol A[22m │ [1mCol B[22m │
+├───────┼───────┤
+│ 1     │ 2     │
+│ 3     │ 4     │
+└───────┴───────┘
+
+[1;4;36mTask List[0m
+
+• [x] Done
+• [ ] Todo
+
+[1;4;36mNested List[0m
+
+• Level 1
+  • Level 2
+    • Level 3
+
+[1;4;36mThematic Break[0m
+
+────────────────────────────────────────────────────────────────────────────────
+
+End."
+`;
