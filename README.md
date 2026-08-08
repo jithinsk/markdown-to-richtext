@@ -14,6 +14,8 @@ Convert Markdown to rich text output formats. TypeScript-first, tree-shakeable, 
 npm install md-to-rich
 ```
 
+Requires Node.js ≥ 20.
+
 ---
 
 ## Quick Start
