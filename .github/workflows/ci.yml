@@ -21,8 +21,9 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        # Matches the `engines.node: >=18` floor in package.json.
-        node: [18, 20, 22]
+        # Matches the `engines.node: >=20` floor in package.json. 24 is the
+        # current LTS and guards against forward breakage.
+        node: [20, 22, 24]
     steps:
       - uses: actions/checkout@v4
 

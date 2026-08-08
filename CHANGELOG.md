@@ -7,9 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Removed
+
+- **Breaking:** dropped support for Node 18, which reached end-of-life on 2025-04-30. `engines.node` is now `>=20.0.0`.
+
 ### Added
 
-- GitHub Actions CI running typecheck, tests, and build on Node 18, 20, and 22
+- GitHub Actions CI running typecheck, tests, and build on Node 20, 22, and 24
 - Dependabot weekly updates for npm dependencies and GitHub Actions, with patch and minor updates auto-merging once CI passes
 - Release workflow publishing to npm on `v*` tags via trusted publishing (OIDC), with build provenance attestation
 
