@@ -92,6 +92,20 @@ jobs:
             echo "has_notes=false" >> "$GITHUB_OUTPUT"
           fi
 
+      # Tells the docs site to move its playground onto this release. Requires
+      # SITE_DISPATCH_TOKEN — a token with contents:write on
+      # jithinsk/md-to-rich.github.io, since GITHUB_TOKEN cannot reach another
+      # repository. Without the secret this step is skipped and the site's
+      # scheduled sync picks the release up within six hours instead.
+      - name: Notify docs site
+        env:
+          GH_TOKEN: ${{ secrets.SITE_DISPATCH_TOKEN }}
+        if: env.GH_TOKEN != ''
+        run: |
+          gh api repos/jithinsk/md-to-rich.github.io/dispatches \
+            -f event_type=md-to-rich-released \
+            -f client_payload[version]="${GITHUB_REF_NAME#v}"
+
       - name: Create GitHub Release
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
