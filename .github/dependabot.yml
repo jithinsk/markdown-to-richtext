@@ -21,6 +21,17 @@ updates:
     commit-message:
       prefix: chore
       include: scope
+    ignore:
+      # TypeScript 7 crashes the build: tsup 8 bundles rollup-plugin-dts, which
+      # is pinned internally to typescript 5.7, and .d.ts generation dies with
+      # "Cannot read properties of undefined (reading 'useCaseSensitiveFileNames')".
+      # Nothing to fix on our side — this is waiting on tsup upstream.
+      # Remove this entry once tsup supports TypeScript 7. Minor and patch
+      # updates within 5.x still come through.
+      - dependency-name: typescript
+        update-types:
+          - version-update:semver-major
+
     groups:
       # remark/unified releases move in lockstep; one PR per week is enough.
       unified-ecosystem:
