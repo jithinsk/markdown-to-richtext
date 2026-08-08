@@ -1,0 +1,61 @@
+version: 2
+
+updates:
+  # ---------------------------------------------------------------------------
+  # The library itself
+  # ---------------------------------------------------------------------------
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: weekly
+      day: monday
+      time: "06:00"
+      timezone: Asia/Kolkata
+    open-pull-requests-limit: 5
+    # This package is published, so only widen the declared ranges when a new
+    # version genuinely falls outside them. Keeps consumers from being forced
+    # onto a newer floor for no reason.
+    versioning-strategy: increase-if-necessary
+    labels:
+      - dependencies
+    commit-message:
+      prefix: chore
+      include: scope
+    groups:
+      # remark/unified releases move in lockstep; one PR per week is enough.
+      unified-ecosystem:
+        patterns:
+          - unified
+          - remark*
+          - mdast*
+          - unist*
+          - "@types/mdast"
+        update-types:
+          - minor
+          - patch
+      dev-dependencies:
+        dependency-type: development
+        update-types:
+          - minor
+          - patch
+
+  # ---------------------------------------------------------------------------
+  # GitHub Actions used by the workflows below
+  # ---------------------------------------------------------------------------
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+      day: monday
+      time: "06:00"
+      timezone: Asia/Kolkata
+    open-pull-requests-limit: 5
+    labels:
+      - dependencies
+      - github-actions
+    commit-message:
+      prefix: ci
+    groups:
+      actions:
+        patterns:
+          - "*"

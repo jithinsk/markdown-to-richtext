@@ -3,3 +3,9 @@ dist/
 coverage/
 *.tgz
 .ssh_deploy_key
+
+# Documentation site lives in its own repo (jithinsk/md-to-rich.github.io),
+# checked out here for convenience.
+website/
+
+.DS_Store
