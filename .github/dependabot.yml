@@ -33,8 +33,18 @@ updates:
         update-types:
           - minor
           - patch
+      # @vitest/coverage-v8 declares an exact peer on vitest, so a split major
+      # bump can never install. No update-types filter here on purpose: majors
+      # must travel together too.
+      vitest:
+        patterns:
+          - vitest
+          - "@vitest/*"
       dev-dependencies:
         dependency-type: development
+        exclude-patterns:
+          - vitest
+          - "@vitest/*"
         update-types:
           - minor
           - patch

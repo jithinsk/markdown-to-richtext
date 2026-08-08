@@ -5,6 +5,30 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Added
+
+- GitHub Actions CI running typecheck, tests, and build on Node 18, 20, and 22
+- Dependabot weekly updates for npm dependencies and GitHub Actions, with patch and minor updates auto-merging once CI passes
+- Release workflow publishing to npm on `v*` tags via trusted publishing (OIDC), with build provenance attestation
+
+## [1.0.2] - 2026-03-06
+
+### Changed
+
+- Source maps are no longer published to npm (`sourcemap: false`), halving the installed package size from 288 KB to 144 KB across 45 to 29 files
+
+No functional changes — the emitted JavaScript and type declarations are identical to 1.0.1.
+
+## [1.0.1] - 2026-03-06
+
+### Added
+
+- `homepage`, `repository`, and `bugs` fields in `package.json`, so npm links back to the GitHub repository and issue tracker
+
+No functional changes — the published `dist/` output is identical to 1.0.0.
+
 ## [1.0.0] - 2026-03-06
 
 ### Added
