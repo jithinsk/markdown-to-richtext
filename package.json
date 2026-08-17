@@ -79,7 +79,7 @@
   },
   "devDependencies": {
     "@types/mdast": "^4.0.4",
-    "@types/node": "^22.0.0",
+    "@types/node": "^26.2.0",
     "@vitest/coverage-v8": "^4.1.10",
     "tsup": "^8.0.0",
     "tsx": "^4.21.0",
