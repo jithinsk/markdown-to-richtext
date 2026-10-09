@@ -39,7 +39,12 @@ export function prepareTree(ast: Root): PreparedTree {
   collectDefinitions(tree, definitions, footnoteDefinitions)
 
   const footnoteNumbers = new Map<string, number>()
-  resolve(tree, definitions, footnoteDefinitions, footnoteNumbers)
+  // Number references in the body first, then those inside footnotes, as GitHub does
+  const pending: FootnoteDefinition[] = []
+  resolve(tree, definitions, footnoteDefinitions, footnoteNumbers, pending)
+  for (let i = 0; i < pending.length; i++) {
+    resolve(pending[i]!, definitions, footnoteDefinitions, footnoteNumbers, pending)
+  }
 
   const footnotes: Footnote[] = []
   for (const [identifier, number] of footnoteNumbers) {
@@ -51,7 +56,7 @@ export function prepareTree(ast: Root): PreparedTree {
   )
   // Resolve references inside unreferenced definitions too (the Doc Tree keeps them)
   for (const definition of unreferencedFootnotes) {
-    resolve(definition, definitions, footnoteDefinitions, new Map())
+    resolve(definition, definitions, footnoteDefinitions, new Map(), [])
   }
 
   return { tree, footnoteNumbers, footnotes, unreferencedFootnotes }
@@ -83,12 +88,13 @@ function resolve(
   definitions: Map<string, Definition>,
   footnoteDefinitions: Map<string, FootnoteDefinition>,
   footnoteNumbers: Map<string, number>,
+  pending: FootnoteDefinition[],
 ): void {
   const resolved: Content[] = []
   for (const child of node.children as Content[]) {
     if (child.type === 'linkReference') {
       const ref = child as LinkReference
-      resolve(ref, definitions, footnoteDefinitions, footnoteNumbers)
+      resolve(ref, definitions, footnoteDefinitions, footnoteNumbers, pending)
       const def = definitions.get(ref.identifier)
       if (def) {
         resolved.push({ type: 'link', url: def.url, title: def.title ?? null, children: ref.children } satisfies Link)
@@ -110,15 +116,16 @@ function resolve(
     }
     if (child.type === 'footnoteReference') {
       const ref = child as FootnoteReference
-      if (footnoteDefinitions.has(ref.identifier) && !footnoteNumbers.has(ref.identifier)) {
+      const definition = footnoteDefinitions.get(ref.identifier)
+      if (definition && !footnoteNumbers.has(ref.identifier)) {
         footnoteNumbers.set(ref.identifier, footnoteNumbers.size + 1)
-        // Definitions can reference other footnotes; number those as they appear
-        resolve(footnoteDefinitions.get(ref.identifier)!, definitions, footnoteDefinitions, footnoteNumbers)
+        // Resolved after the current pass, so nested references number after the body's
+        pending.push(definition)
       }
       resolved.push(child)
       continue
     }
-    if ('children' in child) resolve(child as Parent, definitions, footnoteDefinitions, footnoteNumbers)
+    if ('children' in child) resolve(child as Parent, definitions, footnoteDefinitions, footnoteNumbers, pending)
     resolved.push(child)
   }
   node.children = resolved as typeof node.children

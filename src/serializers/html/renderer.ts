@@ -21,6 +21,9 @@ class Slugger {
       .toLowerCase()
       // Keep letters and digits from any script, not just ASCII
       .replace(/[^\p{L}\p{M}\p{N}\s_-]/gu, '')
+      // Drop combining marks left behind by removed symbols (emoji variation selectors, keycaps)
+      .replace(/(?<![\p{L}\p{M}\p{N}])\p{M}+/gu, '')
+      .replace(/(?<=\p{N})[\u20e3\ufe0e\ufe0f]+/gu, '')
       .trim()
       .replace(/[\s_]+/g, '-')
     const count = this.seen.get(base) ?? 0
@@ -224,9 +227,9 @@ export function renderToHtml(ast: Root, opts: HtmlOptions): string {
       } else {
         blocks.push(backref)
       }
-      return `<li id="fn-${number}">${blocks.join('')}</li>`
+      return `<li id="fn-${number}"${cls('li')}>${blocks.join('')}</li>`
     })
-    return `<section class="footnotes" data-footnotes><ol>${items.join('')}</ol></section>`
+    return `<section class="footnotes" data-footnotes><ol${cls('ol')}>${items.join('')}</ol></section>`
   }
 
   function plainText(nodes: PhrasingContent[]): string {

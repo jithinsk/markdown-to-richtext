@@ -197,6 +197,17 @@ describe('toDocTree', () => {
       expect(para.children[3]).toEqual({ type: 'footnoteReference', identifier: 'b', label: 'b' })
     })
 
+    it('resolves links inside unreferenced footnote definitions', () => {
+      const d = toDocTree('x\n\n[^u]: see [l]\n\n[l]: https://a.dev').children[1]
+      const para = d?.type === 'footnoteDefinition' ? d.children[0] : undefined
+      expect(para?.type === 'paragraph' && para.children[1]?.type).toBe('link')
+    })
+
+    it('keeps the first of duplicate footnote definitions', () => {
+      const defs = toDocTree('x[^a]\n\n[^a]: one\n\n[^a]: two').children.filter((n) => n.type === 'footnoteDefinition')
+      expect(defs).toHaveLength(1)
+    })
+
     it('moves definitions to the end, ordered by first reference', () => {
       const defs = doc.children.slice(1)
       expect(defs.map((d) => d.type)).toEqual(['footnoteDefinition', 'footnoteDefinition', 'footnoteDefinition'])

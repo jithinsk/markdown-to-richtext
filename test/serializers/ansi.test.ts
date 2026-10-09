@@ -185,12 +185,23 @@ describe('toAnsi', () => {
         '[image: https://example.com/a.png]',
       )
     })
+
+    it('strips control characters from the image fallback', () => {
+      expect(toAnsi('![](<&#27;[31mx>)', { columns: 80 })).not.toContain('\x1b[31m')
+    })
   })
 
   describe('blockquote width', () => {
     it('keeps prefixed lines within the column limit', () => {
       const out = strip(toAnsi('> ' + 'word '.repeat(40), { columns: 30 }))
       for (const line of out.split('\n')) expect(line.length).toBeLessThanOrEqual(30)
+    })
+
+    it('keeps nested blockquotes and blockquotes in list items within the limit', () => {
+      for (const md of ['> > ' + 'word '.repeat(40), '- item\n\n  > ' + 'word '.repeat(40)]) {
+        const out = strip(toAnsi(md, { columns: 30 }))
+        for (const line of out.split('\n')) expect(line.length).toBeLessThanOrEqual(30)
+      }
     })
   })
 })

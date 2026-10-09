@@ -11,20 +11,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - GFM footnotes. `toHtml()` renders references as numbered superscript links and appends a `<section class="footnotes">` with back-links; `toAnsi()` prints `[1]` markers and lists the notes at the end. Notes are numbered in order of first reference, and unreferenced definitions are left out of HTML and terminal output.
 - Doc Tree: `footnoteReference` inline nodes and `footnoteDefinition` block nodes (`DocFootnoteReference`, `DocFootnoteDefinition`). Definitions are moved to the end of the document. Code that switches exhaustively over `DocInlineNode` or `DocBlockNode` needs a case for each.
-- Doc Tree: `DocList.start`, the number of the first item of an ordered list (`null` for unordered lists).
+- Doc Tree: `DocList.start`, the number of the first item of an ordered list (`null` for unordered lists). It is a required field, so code that builds `DocList` objects itself (fixtures, transforms) must set it, and stored Doc Tree snapshots gain `"start": null` on unordered lists.
 
 ### Fixed
 
 - Reference-style links and images (`[text][ref]`, `[ref][]`, `[ref]`, `![alt][ref]`) were dropped entirely, including their text, by every built-in serializer. They now resolve against their `[ref]: url` definitions.
 - Ordered lists that don't start at 1 (`3. item`) now keep their number: `<ol start="3">` in HTML and `3.` in terminal output.
-- Heading IDs now keep inline code text and letters outside ASCII: `## Use \`foo\` here` → `use-foo-here`, `# Café` → `café`. IDs for headings without these are unchanged.
+- Heading IDs now keep inline code text and letters outside ASCII: `## Use \`foo\` here` → `use-foo-here`, `# Café` → `café`. Emoji are still dropped (`# ❤️ Love` → `love`). IDs for other headings are unchanged.
 - `classNames.code` on a fenced code block with a language produced two `class` attributes; they are now merged (`class="language-ts mono"`).
 - `toAnsi()` dropped code blocks, blockquotes and tables inside list items; they are now rendered, indented under the item.
 - `toAnsi()` no longer turns `javascript:`, `data:` or other unsafe URLs into OSC 8 hyperlinks or prints them after the link text; the label is shown on its own.
-- `toAnsi()` blockquote lines could run two characters past `columns`; they now fit.
-- `toAnsi()` printed `[image: ]` for images with empty alt text; it now falls back to the URL.
+- `toAnsi()` blockquote lines could run two characters past `columns`; they now fit, including when nested or inside list items and footnotes.
+- `toAnsi()` printed `[image: ]` for images with empty alt text; it now falls back to the URL, with control characters removed.
 
-Custom serializers passed to `serialize()` still receive the unmodified MDAST, including reference and definition nodes. The built-in serializers work on a copy and never modify a tree passed to them.
+Custom serializers passed to `serialize()` still receive the unmodified MDAST, including reference and definition nodes. The built-in serializers work on a copy (`structuredClone`) and never modify a tree passed to them; a remark plugin that stores functions or other non-cloneable values on nodes will now make them throw. When a footnote is defined twice, only the first definition is used, in every output including the Doc Tree.
 
 ## [2.0.1] - 2026-10-09
 

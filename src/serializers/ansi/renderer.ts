@@ -142,7 +142,10 @@ export function renderToAnsi(ast: Root, opts: AnsiOptions): string {
         textParts.push(renderInlines((child as Paragraph).children))
       } else {
         // Code blocks, blockquotes, tables: indent under the item text
+        const outer = columns
+        columns = Math.max(1, columns - hanging.length)
         const block = renderBlock(child)
+        columns = outer
         if (block) otherBlocks.push(block.split('\n').map((l) => hanging + l).join('\n'))
       }
     }
@@ -237,7 +240,7 @@ export function renderToAnsi(ast: Root, opts: AnsiOptions): string {
       }
       case 'image': {
         const img = node as Image
-        return `[image: ${img.alt || img.url}]`
+        return `[image: ${(img.alt || img.url).replace(/[\x00-\x1f\x7f]/g, '')}]`
       }
       case 'break':
         return '\n'

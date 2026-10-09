@@ -225,6 +225,37 @@ describe('toHtml', () => {
     it('renders nothing extra without footnotes', () => {
       expect(toHtml('plain')).toBe('<p>plain</p>')
     })
+
+    it('numbers body references before references nested in footnotes', () => {
+      const html = toHtml('A[^1] B[^2]\n\n[^1]: see[^3]\n\n[^2]: x\n\n[^3]: y')
+      expect(html).toContain('A<sup><a href="#fn-1"')
+      expect(html).toContain('B<sup><a href="#fn-2"')
+      expect(html).toContain('see<sup><a href="#fn-3"')
+    })
+
+    it('handles self-referencing footnotes without looping', () => {
+      expect(toHtml('x[^a]\n\n[^a]: see[^a]')).toContain('<li id="fn-1">')
+    })
+
+    it('applies classNames to the footnote list and paragraphs', () => {
+      const html = toHtml('x[^a]\n\n[^a]: note', { classNames: { ol: 'notes', li: 'note', p: 'para' } })
+      expect(html).toContain('<ol class="notes"><li id="fn-1" class="note"><p class="para">note <a href="#fnref-1"')
+    })
+
+    it('appends the back-link after a non-paragraph last block', () => {
+      const html = toHtml('x[^a]\n\n[^a]:\n    ```\n    code\n    ```')
+      expect(html).toMatch(/<\/pre><a href="#fnref-1" data-footnote-backref/)
+    })
+
+    it('resolves definitions nested in blockquotes and references inside link text', () => {
+      expect(toHtml('[![a][i]][l]\n\n> [i]: /i.png\n\n[l]: /page')).toBe(
+        '<p><a href="/page"><img src="/i.png" alt="a"></a></p><blockquote></blockquote>',
+      )
+    })
+
+    it('leaves [^1] as text when GFM is off', () => {
+      expect(toHtml('x[^1]\n\n[^1]: n', { gfm: false })).not.toContain('<sup>')
+    })
   })
 
   describe('heading id slugs', () => {
@@ -235,6 +266,16 @@ describe('toHtml', () => {
     it('keeps non-ASCII letters', () => {
       expect(toHtml('# Café au lait')).toContain('id="café-au-lait"')
       expect(toHtml('# 日本語 テキスト')).toContain('id="日本語-テキスト"')
+    })
+
+    it('drops emoji and their variation selectors', () => {
+      expect(toHtml('# ❤️ Love')).toContain('id="love"')
+      expect(toHtml('# 1️⃣ Step')).toContain('id="1-step"')
+    })
+
+    it('keeps underscores as hyphens and ignores footnote markers', () => {
+      expect(toHtml('# snake_case name')).toContain('id="snake-case-name"')
+      expect(toHtml('# Title[^a]\n\n[^a]: n')).toContain('id="title"')
     })
   })
 
