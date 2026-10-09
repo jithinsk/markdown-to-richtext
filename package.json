@@ -3,7 +3,7 @@
   "version": "2.1.0",
   "description": "Convert Markdown to HTML, ANSI terminal output, and Doc Tree via an extensible Serializer interface",
   "license": "MIT",
-  "author": "Jithin Sebastian",
+  "author": "Jithin Sebastian (https://www.jithins.dev)",
   "homepage": "https://md-to-rich.jithins.dev",
   "repository": {
     "type": "git",
