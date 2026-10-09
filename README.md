@@ -165,6 +165,8 @@ DocBreak             { type: 'break' }
 
 Nested `strong`/`emphasis`/`delete` marks are flattened into `DocText` boolean flags, making it straightforward to map into ProseMirror marks or Slate leaf properties.
 
+`DocLink.url` and `DocImage.url` are sanitised the same way as HTML output: anything other than `http:`, `https:`, `mailto:`, or a relative reference is replaced with `#`.
+
 ---
 
 ## ProseMirror / Slate Adapter Guide

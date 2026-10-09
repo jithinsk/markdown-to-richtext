@@ -2,7 +2,7 @@ import { readFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { describe, expect, it } from 'vitest'
 import { toDocTree } from '../../src/serializers/doc-tree/index.js'
-import type { DocDocument, DocHeading, DocParagraph, DocText } from '../../src/types.js'
+import type { DocDocument, DocHeading, DocInlineNode, DocParagraph, DocText } from '../../src/types.js'
 
 const fixture = (name: string) =>
   readFileSync(join(import.meta.dirname, '../fixtures', name), 'utf8')
@@ -106,6 +106,60 @@ describe('toDocTree', () => {
         expect(code.lang).toBe('ts')
         expect(code.value).toBe('const x = 1')
       }
+    })
+  })
+
+  describe('URL sanitisation', () => {
+    const firstInline = (md: string): DocInlineNode | undefined => {
+      const para = toDocTree(md).children[0] as DocParagraph
+      return para.children[0]
+    }
+    const linkUrl = (md: string) => {
+      const node = firstInline(md)
+      return node?.type === 'link' ? node.url : undefined
+    }
+    const imageUrl = (md: string) => {
+      const node = firstInline(md)
+      return node?.type === 'image' ? node.url : undefined
+    }
+
+    it('blocks javascript: URLs in links', () => {
+      expect(linkUrl('[click](javascript:alert(1))')).toBe('#')
+    })
+
+    it('blocks mixed-case and whitespace-obfuscated javascript: URLs', () => {
+      expect(linkUrl('[x](JavaScript:alert(1))')).toBe('#')
+      expect(linkUrl('[x](java&#9;script:alert(1))')).toBe('#')
+    })
+
+    it('blocks data: and vbscript: URLs in links', () => {
+      expect(linkUrl('[x](data:text/html,hi)')).toBe('#')
+      expect(linkUrl('[x](vbscript:msgbox)')).toBe('#')
+    })
+
+    it('blocks javascript: and data: URLs in images', () => {
+      expect(imageUrl('![x](javascript:alert(1))')).toBe('#')
+      expect(imageUrl('![x](data:image/svg+xml,<svg/>)')).toBe('#')
+    })
+
+    it('allows http:, https: and mailto: URLs', () => {
+      expect(linkUrl('[x](https://example.com/a?b=1)')).toBe('https://example.com/a?b=1')
+      expect(linkUrl('[x](http://example.com)')).toBe('http://example.com')
+      expect(linkUrl('[x](mailto:user@example.com)')).toBe('mailto:user@example.com')
+      expect(imageUrl('![x](https://example.com/a.png)')).toBe('https://example.com/a.png')
+    })
+
+    it('allows relative URLs and fragments', () => {
+      expect(linkUrl('[x](/path/to/page)')).toBe('/path/to/page')
+      expect(linkUrl('[x](./page.md)')).toBe('./page.md')
+      expect(linkUrl('[x](#section)')).toBe('#section')
+      expect(imageUrl('![x](img/logo.png)')).toBe('img/logo.png')
+    })
+
+    it('sanitises links nested inside formatting', () => {
+      const para = toDocTree('**[x](javascript:alert(1))**').children[0] as DocParagraph
+      const link = para.children.find((n) => n.type === 'link')
+      expect(link?.type === 'link' && link.url).toBe('#')
     })
   })
 

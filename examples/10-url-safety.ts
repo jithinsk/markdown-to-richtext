@@ -1,12 +1,14 @@
 /**
  * Example 10 — URL Safety
  *
- * The HTML serializer blocks dangerous URL protocols (javascript:, data:, etc.)
- * by default. This example shows what is allowed and what gets replaced with '#'.
+ * The HTML and Doc Tree serializers block dangerous URL protocols (javascript:,
+ * data:, etc.) by default. This example shows what is allowed and what gets
+ * replaced with '#'.
  *
  * Run: npx tsx examples/10-url-safety.ts
  */
-import { toHtml } from '../src/index.js'
+import { toDocTree, toHtml } from '../src/index.js'
+import type { DocParagraph } from '../src/index.js'
 
 const cases: Array<{ label: string; md: string }> = [
   { label: 'https (safe)',      md: '[link](https://example.com)' },
@@ -26,5 +28,8 @@ for (const { label, md } of cases) {
   const html = toHtml(md)
   // Extract href or src from the output
   const match = html.match(/(?:href|src)="([^"]*)"/)
-  console.log(`${label.padEnd(28)} → ${match?.[1] ?? '(no attr)'}`)
+  // The Doc Tree carries the same sanitised URL on link and image nodes
+  const inline = (toDocTree(md).children[0] as DocParagraph).children[0]
+  const treeUrl = inline && 'url' in inline ? inline.url : '(no url)'
+  console.log(`${label.padEnd(28)} → html: ${(match?.[1] ?? '(no attr)').padEnd(28)} tree: ${treeUrl}`)
 }

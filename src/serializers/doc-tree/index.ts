@@ -5,6 +5,7 @@ import type {
   Text, InlineCode, Strong, Emphasis, Delete, Link, Image, Break,
 } from 'mdast'
 import { serialize } from '../../serialize.js'
+import { safeUrl } from '../../url.js'
 import type {
   Serializer, DocTreeOptions,
   DocDocument, DocBlockNode, DocInlineNode,
@@ -57,7 +58,7 @@ function renderInline(node: PhrasingContent, flags: InlineFlags): DocInlineNode[
       return [
         {
           type: 'link',
-          url: l.url,
+          url: safeUrl(l.url),
           title: l.title ?? null,
           children,
         } satisfies DocLink,
@@ -68,7 +69,7 @@ function renderInline(node: PhrasingContent, flags: InlineFlags): DocInlineNode[
       return [
         {
           type: 'image',
-          url: img.url,
+          url: safeUrl(img.url),
           alt: img.alt ?? null,
           title: img.title ?? null,
         } satisfies DocImage,

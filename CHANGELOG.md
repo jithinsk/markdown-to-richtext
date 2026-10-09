@@ -5,6 +5,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.0.1] - 2026-10-09
+
+### Security
+
+- `toDocTree()` now sanitises `DocLink.url` and `DocImage.url` the same way `toHtml()` sanitises `href` and `src`: URLs using any protocol other than `http:`, `https:`, or `mailto:` (for example `javascript:`, `data:`, `vbscript:`) are replaced with `#`. Relative references and `#fragment` links are unchanged. Previously the Doc Tree passed these URLs through as written, so an editor or renderer built on it could emit a `javascript:` link from untrusted Markdown.
+
+If you relied on `data:` image URLs in Doc Tree output, they are now replaced with `#`; resolve them from the source Markdown before calling `toDocTree()` or with a remark plugin.
+
 ## [2.0.0] - 2026-08-08
 
 ### Removed

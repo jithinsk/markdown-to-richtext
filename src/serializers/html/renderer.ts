@@ -6,6 +6,7 @@ import type {
   Html,
 } from 'mdast'
 import type { HtmlOptions, HtmlElement } from '../../types.js'
+import { safeUrl } from '../../url.js'
 
 // ---------------------------------------------------------------------------
 // Slugger — collision-safe heading ids
@@ -36,25 +37,6 @@ function escapeHtml(s: string): string {
     .replace(/</g, '&lt;')
     .replace(/>/g, '&gt;')
     .replace(/"/g, '&quot;')
-}
-
-const SAFE_PROTOCOLS = new Set(['http:', 'https:', 'mailto:'])
-
-/**
- * Returns the URL unchanged when it uses a safe protocol or is a relative
- * reference (path / anchor). Replaces anything else (javascript:, data:, …)
- * with '#' to prevent protocol-based XSS.
- */
-function safeUrl(url: string): string {
-  // Allow relative references: anchors, absolute paths, relative paths
-  if (url.startsWith('#') || url.startsWith('/') || url.startsWith('.')) return url
-  try {
-    const parsed = new URL(url)
-    return SAFE_PROTOCOLS.has(parsed.protocol) ? url : '#'
-  } catch {
-    // URL() throws on relative URLs in some environments — treat as safe relative ref
-    return url
-  }
 }
 
 // ---------------------------------------------------------------------------
