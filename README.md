@@ -6,6 +6,8 @@ Convert Markdown to rich text output formats. TypeScript-first, tree-shakeable, 
 
 **Extensible:** implement `Serializer<T>` to add any output format without touching this package.
 
+**Docs & playground:** [md-to-rich.jithins.dev](https://md-to-rich.jithins.dev)
+
 ---
 
 ## Install
