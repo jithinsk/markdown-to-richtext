@@ -3,9 +3,10 @@ import type {
   Heading, Paragraph, Blockquote, Code, List, ListItem,
   Table, TableRow, TableCell, ThematicBreak,
   Text, InlineCode, Strong, Emphasis, Delete, Link, Image, Break,
-  Html,
+  Html, FootnoteReference,
 } from 'mdast'
 import type { HtmlOptions, HtmlElement } from '../../types.js'
+import { prepareTree } from '../../references.js'
 import { safeUrl } from '../../url.js'
 
 // ---------------------------------------------------------------------------
@@ -18,7 +19,8 @@ class Slugger {
   slug(value: string): string {
     const base = value
       .toLowerCase()
-      .replace(/[^\w\s-]/g, '')
+      // Keep letters and digits from any script, not just ASCII
+      .replace(/[^\p{L}\p{M}\p{N}\s_-]/gu, '')
       .trim()
       .replace(/[\s_]+/g, '-')
     const count = this.seen.get(base) ?? 0
@@ -44,6 +46,8 @@ function escapeHtml(s: string): string {
 // ---------------------------------------------------------------------------
 
 export function renderToHtml(ast: Root, opts: HtmlOptions): string {
+  const { tree, footnoteNumbers, footnotes } = prepareTree(ast)
+  const footnoteRefCounts = new Map<number, number>()
   const slugger = new Slugger()
   const headingIds = opts.headingIds !== false
   const renderImages = opts.renderImages !== false
@@ -96,14 +100,17 @@ export function renderToHtml(ast: Root, opts: HtmlOptions): string {
   }
 
   function renderCode(node: Code): string {
-    const lang = node.lang ? ` class="language-${escapeHtml(node.lang)}"` : ''
-    return `<pre${cls('pre')}><code${lang}${cls('code')}>${escapeHtml(node.value)}</code></pre>`
+    // One class attribute: the language class followed by any classNames.code
+    const classes = [node.lang ? `language-${node.lang}` : '', classNames.code ?? ''].filter(Boolean).join(' ')
+    const classAttr = classes ? ` class="${escapeHtml(classes)}"` : ''
+    return `<pre${cls('pre')}><code${classAttr}>${escapeHtml(node.value)}</code></pre>`
   }
 
   function renderList(node: List): string {
     const tag = node.ordered ? 'ol' : 'ul'
+    const startAttr = node.ordered && node.start != null && node.start !== 1 ? ` start="${node.start}"` : ''
     const items = node.children.map((li) => renderListItem(li, node)).join('')
-    return `<${tag}${cls(tag)}>${items}</${tag}>`
+    return `<${tag}${startAttr}${cls(tag)}>${items}</${tag}>`
   }
 
   function renderListItem(node: ListItem, parent: List): string {
@@ -191,20 +198,46 @@ export function renderToHtml(ast: Root, opts: HtmlOptions): string {
         return '<br>'
       case 'html':
         return allowRawHtml ? (node as Html).value : ''
+      case 'footnoteReference': {
+        const n = footnoteNumbers.get((node as FootnoteReference).identifier)
+        if (n === undefined) return ''
+        // Repeat references get their own id so each back-link target is unique
+        const seen = (footnoteRefCounts.get(n) ?? 0) + 1
+        footnoteRefCounts.set(n, seen)
+        const id = seen === 1 ? `fnref-${n}` : `fnref-${n}-${seen}`
+        return `<sup><a href="#fn-${n}" id="${id}" data-footnote-ref>${n}</a></sup>`
+      }
       default:
         return ''
     }
   }
 
+  function renderFootnotes(): string {
+    if (footnotes.length === 0) return ''
+    const items = footnotes.map(({ number, definition }) => {
+      const backref = `<a href="#fnref-${number}" data-footnote-backref aria-label="Back to reference ${number}">↩</a>`
+      const blocks = definition.children.map(renderBlock)
+      // Put the back-link inside the last paragraph, as GitHub does
+      const last = blocks.length - 1
+      if (definition.children[last]?.type === 'paragraph') {
+        blocks[last] = blocks[last]!.replace(/<\/p>$/, ` ${backref}</p>`)
+      } else {
+        blocks.push(backref)
+      }
+      return `<li id="fn-${number}">${blocks.join('')}</li>`
+    })
+    return `<section class="footnotes" data-footnotes><ol>${items.join('')}</ol></section>`
+  }
+
   function plainText(nodes: PhrasingContent[]): string {
     return nodes
       .map((n) => {
-        if (n.type === 'text') return (n as Text).value
+        if (n.type === 'text' || n.type === 'inlineCode') return n.value
         if ('children' in n && Array.isArray(n.children)) return plainText(n.children as PhrasingContent[])
         return ''
       })
       .join('')
   }
 
-  return renderBlock(ast)
+  return renderBlock(tree) + renderFootnotes()
 }

@@ -1,6 +1,10 @@
 import { describe, expect, it } from 'vitest'
 import { expectTypeOf } from 'vitest'
 import { serialize } from '../src/serialize.js'
+import { parseMarkdown } from '../src/parser.js'
+import { HtmlSerializer } from '../src/serializers/html/index.js'
+import { AnsiSerializer } from '../src/serializers/ansi/index.js'
+import { DocTreeSerializer } from '../src/serializers/doc-tree/index.js'
 import type { Root } from 'mdast'
 import type { BaseOptions, Serializer } from '../src/types.js'
 
@@ -74,5 +78,14 @@ describe('serialize()', () => {
     const noop = () => {}
     const result = serialize('hello', PlainTextSerializer, { remarkPlugins: [noop as never] })
     expect(result).toContain('hello')
+  })
+
+  it('built-in serializers do not modify a tree passed in directly', () => {
+    const ast = parseMarkdown('[x][r] note[^1]\n\n[r]: /p\n\n[^1]: Footnote.')
+    const before = structuredClone(ast)
+    HtmlSerializer.serialize(ast, {})
+    AnsiSerializer.serialize(ast, { columns: 80 })
+    DocTreeSerializer.serialize(ast, {})
+    expect(ast).toEqual(before)
   })
 })

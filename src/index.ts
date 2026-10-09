@@ -27,6 +27,8 @@ export type {
   DocLink,
   DocImage,
   DocBreak,
+  DocFootnoteReference,
+  DocFootnoteDefinition,
   DocInlineNode,
   DocBlockNode,
   DocTreeNode,

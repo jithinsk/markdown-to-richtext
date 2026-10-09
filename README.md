@@ -149,18 +149,20 @@ DocHeading           { type: 'heading', depth: 1-6, children: DocInlineNode[] }
 DocParagraph         { type: 'paragraph', children: DocInlineNode[] }
 DocBlockquote        { type: 'blockquote', children: DocBlockNode[] }
 DocCodeBlock         { type: 'code', lang: string|null, value: string }
-DocList              { type: 'list', ordered: boolean, children: DocListItem[] }
+DocList              { type: 'list', ordered: boolean, start: number|null, children: DocListItem[] }
 DocListItem          { type: 'listItem', checked: boolean|null, children: [...] }
 DocTable             { type: 'table', align: [...], children: DocTableRow[] }
 DocTableRow          { type: 'tableRow', isHeader: boolean, children: DocTableCell[] }
 DocTableCell         { type: 'tableCell', children: DocInlineNode[] }
 DocHorizontalRule    { type: 'thematicBreak' }
+DocFootnoteDefinition { type: 'footnoteDefinition', identifier: string, label: string|null, children: DocBlockNode[] }
 
 DocText              { type: 'text', value: string, bold: boolean, italic: boolean, strikethrough: boolean }
 DocInlineCode        { type: 'inlineCode', value: string }
 DocLink              { type: 'link', url: string, title: string|null, children: DocInlineNode[] }
 DocImage             { type: 'image', url: string, alt: string|null, title: string|null }
 DocBreak             { type: 'break' }
+DocFootnoteReference { type: 'footnoteReference', identifier: string, label: string|null }
 ```
 
 Nested `strong`/`emphasis`/`delete` marks are flattened into `DocText` boolean flags, making it straightforward to map into ProseMirror marks or Slate leaf properties.

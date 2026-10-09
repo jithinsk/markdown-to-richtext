@@ -107,6 +107,8 @@ export interface DocCodeBlock {
 export interface DocList {
   type: 'list'
   ordered: boolean
+  /** Number of the first item for ordered lists (e.g. 3 for `3. item`); null for unordered lists */
+  start: number | null
   children: DocListItem[]
 }
 
@@ -168,12 +170,34 @@ export interface DocBreak {
   type: 'break'
 }
 
+/** A GFM footnote marker such as `[^1]` */
+export interface DocFootnoteReference {
+  type: 'footnoteReference'
+  /** Normalised label used to match the definition */
+  identifier: string
+  /** Label as written in the source */
+  label: string | null
+}
+
+/**
+ * A GFM footnote body (`[^1]: …`). Definitions are moved to the end of the
+ * document: referenced ones in order of first reference, then any that are
+ * never referenced.
+ */
+export interface DocFootnoteDefinition {
+  type: 'footnoteDefinition'
+  identifier: string
+  label: string | null
+  children: DocBlockNode[]
+}
+
 export type DocInlineNode =
   | DocText
   | DocInlineCode
   | DocLink
   | DocImage
   | DocBreak
+  | DocFootnoteReference
 
 export type DocBlockNode =
   | DocHeading
@@ -183,6 +207,7 @@ export type DocBlockNode =
   | DocList
   | DocTable
   | DocHorizontalRule
+  | DocFootnoteDefinition
 
 export type DocTreeNode =
   | DocDocument

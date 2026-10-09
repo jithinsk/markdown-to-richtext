@@ -171,4 +171,88 @@ describe('toHtml', () => {
       expect(html).toContain('href="mailto:a@b.com"')
     })
   })
+
+
+  describe('reference-style links and images', () => {
+    it('resolves full, collapsed and shortcut link references', () => {
+      const html = toHtml('[full][ref], [ref][] and [ref]\n\n[ref]: https://example.com "Title"')
+      expect(html).toBe(
+        '<p><a href="https://example.com" title="Title">full</a>, ' +
+          '<a href="https://example.com" title="Title">ref</a> and ' +
+          '<a href="https://example.com" title="Title">ref</a></p>',
+      )
+    })
+
+    it('resolves image references', () => {
+      const html = toHtml('![logo][img]\n\n[img]: https://example.com/logo.png')
+      expect(html).toBe('<p><img src="https://example.com/logo.png" alt="logo"></p>')
+    })
+
+    it('matches definitions case-insensitively', () => {
+      expect(toHtml('[x][REF]\n\n[ref]: /path')).toBe('<p><a href="/path">x</a></p>')
+    })
+
+    it('sanitises URLs from definitions', () => {
+      expect(toHtml('[x][r]\n\n[r]: javascript:alert(1)')).toBe('<p><a href="#">x</a></p>')
+    })
+  })
+
+  describe('footnotes', () => {
+    const md = 'One[^a] and two[^b], one again[^a].\n\n[^b]: Second note.\n\n[^a]: First note.\n\n[^unused]: Never referenced.'
+
+    it('numbers references in order of first use', () => {
+      const html = toHtml(md)
+      expect(html).toContain('One<sup><a href="#fn-1" id="fnref-1" data-footnote-ref>1</a></sup>')
+      expect(html).toContain('two<sup><a href="#fn-2" id="fnref-2" data-footnote-ref>2</a></sup>')
+      expect(html).toContain('again<sup><a href="#fn-1" id="fnref-1-2" data-footnote-ref>1</a></sup>')
+    })
+
+    it('renders referenced definitions in a footnotes section with back-links', () => {
+      const html = toHtml(md)
+      expect(html).toContain(
+        '<section class="footnotes" data-footnotes><ol>' +
+          '<li id="fn-1"><p>First note. <a href="#fnref-1" data-footnote-backref aria-label="Back to reference 1">↩</a></p></li>' +
+          '<li id="fn-2"><p>Second note. <a href="#fnref-2" data-footnote-backref aria-label="Back to reference 2">↩</a></p></li>' +
+          '</ol></section>',
+      )
+      expect(html).not.toContain('Never referenced')
+    })
+
+    it('places the footnotes section at the end', () => {
+      expect(toHtml(md).endsWith('</section>')).toBe(true)
+    })
+
+    it('renders nothing extra without footnotes', () => {
+      expect(toHtml('plain')).toBe('<p>plain</p>')
+    })
+  })
+
+  describe('heading id slugs', () => {
+    it('includes inline code text', () => {
+      expect(toHtml('## Use `foo` here')).toBe('<h2 id="use-foo-here">Use <code>foo</code> here</h2>')
+    })
+
+    it('keeps non-ASCII letters', () => {
+      expect(toHtml('# Café au lait')).toContain('id="café-au-lait"')
+      expect(toHtml('# 日本語 テキスト')).toContain('id="日本語-テキスト"')
+    })
+  })
+
+  describe('ordered list start', () => {
+    it('emits a start attribute when the list does not start at 1', () => {
+      expect(toHtml('3. three\n4. four')).toBe('<ol start="3"><li>three</li><li>four</li></ol>')
+    })
+
+    it('omits the start attribute for lists starting at 1', () => {
+      expect(toHtml('1. one')).toBe('<ol><li>one</li></ol>')
+    })
+  })
+
+  describe('code block classes', () => {
+    it('merges the language class with classNames.code', () => {
+      expect(toHtml('```ts\nx\n```', { classNames: { code: 'mono' } })).toBe(
+        '<pre><code class="language-ts mono">x</code></pre>',
+      )
+    })
+  })
 })

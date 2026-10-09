@@ -3,8 +3,11 @@ import type {
   Heading, Paragraph, Blockquote, Code, List, ListItem,
   Table, TableRow, ThematicBreak,
   Text, InlineCode, Strong, Emphasis, Delete, Link, Image, Break,
+  FootnoteReference,
 } from 'mdast'
+import { prepareTree } from '../../references.js'
 import type { AnsiOptions, AnsiStyle, AnsiTheme } from '../../types.js'
+import { safeUrl } from '../../url.js'
 import { defaultTheme } from './theme.js'
 
 // ---------------------------------------------------------------------------
@@ -46,7 +49,9 @@ function wordWrap(text: string, columns: number, indent = ''): string {
 // ---------------------------------------------------------------------------
 
 export function renderToAnsi(ast: Root, opts: AnsiOptions): string {
-  const columns = opts.columns ?? (process.stdout.columns ?? 80)
+  const { tree, footnoteNumbers, footnotes } = prepareTree(ast)
+  // Wrap width; narrowed while rendering blockquote contents to leave room for the prefix
+  let columns = opts.columns ?? (process.stdout.columns ?? 80)
   const hyperlinks = opts.hyperlinks ?? false
   const theme: AnsiTheme = { ...defaultTheme, ...(opts.theme ?? {}) }
 
@@ -94,7 +99,10 @@ export function renderToAnsi(ast: Root, opts: AnsiOptions): string {
   }
 
   function renderBlockquote(node: Blockquote): string {
+    const outer = columns
+    columns = Math.max(1, columns - 2)
     const inner = renderBlocks(node.children)
+    columns = outer
     const prefix = applyStyle(theme.blockquote, '│ ')
     return inner
       .split('\n')
@@ -111,7 +119,8 @@ export function renderToAnsi(ast: Root, opts: AnsiOptions): string {
   }
 
   function renderList(node: List, depth: number): string {
-    return node.children.map((li, i) => renderListItem(li, node, i + 1, depth)).join('\n')
+    const start = node.ordered ? (node.start ?? 1) : 1
+    return node.children.map((li, i) => renderListItem(li, node, start + i, depth)).join('\n')
   }
 
   function renderListItem(node: ListItem, parent: List, index: number, depth: number): string {
@@ -123,12 +132,18 @@ export function renderToAnsi(ast: Root, opts: AnsiOptions): string {
 
     const nestedLists: List[] = []
     const textParts: string[] = []
+    const otherBlocks: string[] = []
+    const hanging = ' '.repeat(visibleWidth(prefix))
 
     for (const child of node.children) {
       if (child.type === 'list') {
         nestedLists.push(child as List)
       } else if (child.type === 'paragraph') {
         textParts.push(renderInlines((child as Paragraph).children))
+      } else {
+        // Code blocks, blockquotes, tables: indent under the item text
+        const block = renderBlock(child)
+        if (block) otherBlocks.push(block.split('\n').map((l) => hanging + l).join('\n'))
       }
     }
 
@@ -142,11 +157,11 @@ export function renderToAnsi(ast: Root, opts: AnsiOptions): string {
     const mainText = wordWrap(
       taskPrefix + textParts.join(' '),
       columns,
-      ' '.repeat(visibleWidth(prefix)),
+      hanging,
     ).replace(/^\s+/, '')
 
-    const nested = nestedLists.map((l) => renderList(l, depth + 1)).join('\n')
-    return prefix + mainText + (nested ? '\n' + nested : '')
+    const rest = [...otherBlocks, ...nestedLists.map((l) => renderList(l, depth + 1))]
+    return prefix + mainText + (rest.length ? '\n' + rest.join('\n') : '')
   }
 
   function renderTable(node: Table): string {
@@ -211,23 +226,43 @@ export function renderToAnsi(ast: Root, opts: AnsiOptions): string {
       case 'link': {
         const l = node as Link
         const label = renderInlines(l.children)
+        // Strip control chars to prevent escape-sequence injection
+        const url = l.url.replace(/[\x00-\x1f\x7f]/g, '')
+        // Unsafe protocols (javascript:, data:, …) get the label only
+        if (safeUrl(url) !== url) return applyStyle(theme.link, label)
         if (hyperlinks) {
-          // OSC 8 hyperlink — strip control chars to prevent sequence injection
-          const safeUrl = l.url.replace(/[\x00-\x1f\x7f]/g, '')
-          return `\x1b]8;;${safeUrl}\x07${applyStyle(theme.link, label)}\x1b]8;;\x07`
+          return `\x1b]8;;${url}\x07${applyStyle(theme.link, label)}\x1b]8;;\x07`
         }
-        return `${applyStyle(theme.link, label)} (${l.url})`
+        return `${applyStyle(theme.link, label)} (${url})`
       }
       case 'image': {
         const img = node as Image
-        return `[image: ${img.alt ?? img.url}]`
+        return `[image: ${img.alt || img.url}]`
       }
       case 'break':
         return '\n'
+      case 'footnoteReference': {
+        const n = footnoteNumbers.get((node as FootnoteReference).identifier)
+        return n === undefined ? '' : `[${n}]`
+      }
       default:
         return ''
     }
   }
 
-  return renderBlocks(ast.children)
+  function renderFootnotes(): string {
+    return footnotes
+      .map(({ number, definition }) => {
+        const marker = `[${number}] `
+        const outer = columns
+        columns = Math.max(1, columns - marker.length)
+        const body = renderBlocks(definition.children)
+        columns = outer
+        const indent = ' '.repeat(marker.length)
+        return marker + body.split('\n').map((l, i) => (i === 0 ? l : indent + l)).join('\n')
+      })
+      .join('\n')
+  }
+
+  return [renderBlocks(tree.children), renderFootnotes()].filter(Boolean).join('\n\n')
 }

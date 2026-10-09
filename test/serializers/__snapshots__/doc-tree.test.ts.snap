@@ -786,6 +786,7 @@ exports[`toDocTree > renders kitchen sink 1`] = `
         },
       ],
       "ordered": false,
+      "start": null,
       "type": "list",
     },
     {
@@ -857,6 +858,7 @@ exports[`toDocTree > renders kitchen sink 1`] = `
                         },
                       ],
                       "ordered": false,
+                      "start": null,
                       "type": "list",
                     },
                   ],
@@ -864,6 +866,7 @@ exports[`toDocTree > renders kitchen sink 1`] = `
                 },
               ],
               "ordered": false,
+              "start": null,
               "type": "list",
             },
           ],
@@ -871,6 +874,7 @@ exports[`toDocTree > renders kitchen sink 1`] = `
         },
       ],
       "ordered": false,
+      "start": null,
       "type": "list",
     },
     {

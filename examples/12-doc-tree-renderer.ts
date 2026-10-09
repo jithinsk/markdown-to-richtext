@@ -17,7 +17,7 @@ import type {
 const md = `
 # Document Title
 
-An intro paragraph with **bold** and *italic* text.
+An intro paragraph with **bold** and *italic* text.[^why]
 
 ## Features
 
@@ -35,6 +35,8 @@ An intro paragraph with **bold** and *italic* text.
 \`\`\`ts
 const result = toDocTree(md)
 \`\`\`
+
+[^why]: Footnote definitions are moved to the end of the Doc Tree.
 `
 
 // ---------------------------------------------------------------------------
@@ -59,6 +61,8 @@ function renderInline(node: DocInlineNode): string {
       return `![${node.alt ?? ''}](${node.url})`
     case 'break':
       return '\n'
+    case 'footnoteReference':
+      return `[^${node.label ?? node.identifier}]`
     default:
       return ''
   }
@@ -90,7 +94,7 @@ function renderBlock(node: DocBlockNode, depth = 0): string {
       const l = node as DocList
       return l.children
         .map((item, i) => {
-          const bullet = l.ordered ? `${i + 1}.` : '-'
+          const bullet = l.ordered ? `${(l.start ?? 1) + i}.` : '-'
           const text = item.children.map((c) => {
             if ('children' in c && c.type !== 'list') {
               return renderBlock(c as DocBlockNode, depth)
@@ -112,6 +116,8 @@ function renderBlock(node: DocBlockNode, depth = 0): string {
     }
     case 'thematicBreak':
       return '---'
+    case 'footnoteDefinition':
+      return `[^${node.label ?? node.identifier}]: ${node.children.map((c) => renderBlock(c, depth)).join(' ')}`
     default:
       return ''
   }

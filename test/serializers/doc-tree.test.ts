@@ -169,4 +169,52 @@ describe('toDocTree', () => {
       expect(doc.type).toBe('document')
     })
   })
+
+
+  describe('reference-style links and images', () => {
+    it('resolves link and image references', () => {
+      const para = toDocTree('[x][ref] ![i][img]\n\n[ref]: https://a.dev "T"\n[img]: /i.png').children[0] as DocParagraph
+      expect(para.children[0]).toEqual({
+        type: 'link',
+        url: 'https://a.dev',
+        title: 'T',
+        children: [{ type: 'text', value: 'x', bold: false, italic: false, strikethrough: false }],
+      })
+      expect(para.children[2]).toEqual({ type: 'image', url: '/i.png', alt: 'i', title: null })
+    })
+
+    it('does not emit definition nodes', () => {
+      expect(toDocTree('[x][r]\n\n[r]: /p').children).toHaveLength(1)
+    })
+  })
+
+  describe('footnotes', () => {
+    const doc = toDocTree('One[^a] two[^b].\n\n[^b]: Second.\n\n[^a]: First.\n\n[^x]: Unused.')
+
+    it('emits footnoteReference inline nodes', () => {
+      const para = doc.children[0] as DocParagraph
+      expect(para.children[1]).toEqual({ type: 'footnoteReference', identifier: 'a', label: 'a' })
+      expect(para.children[3]).toEqual({ type: 'footnoteReference', identifier: 'b', label: 'b' })
+    })
+
+    it('moves definitions to the end, ordered by first reference', () => {
+      const defs = doc.children.slice(1)
+      expect(defs.map((d) => d.type)).toEqual(['footnoteDefinition', 'footnoteDefinition', 'footnoteDefinition'])
+      expect(defs.map((d) => (d.type === 'footnoteDefinition' ? d.identifier : ''))).toEqual(['a', 'b', 'x'])
+      const first = defs[0]
+      expect(first?.type === 'footnoteDefinition' && first.children[0]?.type).toBe('paragraph')
+    })
+  })
+
+  describe('ordered list start', () => {
+    it('records the start number', () => {
+      const list = toDocTree('3. three\n4. four').children[0]
+      expect(list?.type === 'list' && list.start).toBe(3)
+    })
+
+    it('is null for unordered lists', () => {
+      const list = toDocTree('- a').children[0]
+      expect(list?.type === 'list' && list.start).toBeNull()
+    })
+  })
 })

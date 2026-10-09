@@ -3,8 +3,10 @@ import type {
   Heading, Paragraph, Blockquote, Code, List, ListItem,
   Table, TableRow, TableCell, ThematicBreak,
   Text, InlineCode, Strong, Emphasis, Delete, Link, Image, Break,
+  FootnoteReference, FootnoteDefinition,
 } from 'mdast'
 import { serialize } from '../../serialize.js'
+import { prepareTree } from '../../references.js'
 import { safeUrl } from '../../url.js'
 import type {
   Serializer, DocTreeOptions,
@@ -12,6 +14,7 @@ import type {
   DocHeading, DocParagraph, DocBlockquote, DocCodeBlock, DocList, DocListItem,
   DocTable, DocTableRow, DocTableCell, DocHorizontalRule,
   DocText, DocInlineCode, DocLink, DocImage, DocBreak,
+  DocFootnoteReference, DocFootnoteDefinition,
 } from '../../types.js'
 
 // ---------------------------------------------------------------------------
@@ -77,6 +80,16 @@ function renderInline(node: PhrasingContent, flags: InlineFlags): DocInlineNode[
     }
     case 'break':
       return [{ type: 'break' } satisfies DocBreak]
+    case 'footnoteReference': {
+      const f = node as FootnoteReference
+      return [
+        {
+          type: 'footnoteReference',
+          identifier: f.identifier,
+          label: f.label ?? null,
+        } satisfies DocFootnoteReference,
+      ]
+    }
     default:
       return []
   }
@@ -128,6 +141,7 @@ function renderBlock(node: Content): DocBlockNode | null {
       return {
         type: 'list',
         ordered: l.ordered ?? false,
+        start: l.ordered ? (l.start ?? 1) : null,
         children: l.children.map(renderListItem),
       } satisfies DocList
     }
@@ -180,10 +194,22 @@ function renderTableRow(node: TableRow, isHeader: boolean): DocTableRow {
 // Serializer
 // ---------------------------------------------------------------------------
 
+function renderFootnoteDefinition(node: FootnoteDefinition): DocFootnoteDefinition {
+  return {
+    type: 'footnoteDefinition',
+    identifier: node.identifier,
+    label: node.label ?? null,
+    children: node.children.map(renderBlock).filter(Boolean) as DocBlockNode[],
+  }
+}
+
 function buildDocDocument(ast: Root): DocDocument {
-  const children = ast.children
+  const { tree, footnotes, unreferencedFootnotes } = prepareTree(ast)
+  const children = tree.children
     .map(renderBlock)
     .filter(Boolean) as DocBlockNode[]
+  for (const { definition } of footnotes) children.push(renderFootnoteDefinition(definition))
+  for (const definition of unreferencedFootnotes) children.push(renderFootnoteDefinition(definition))
   return { type: 'document', children }
 }
 
